@@ -1,28 +1,27 @@
-const Temp = require("../../models/Temp");
+const User = require("../../models/User");
 const passHash = require("../../utils/auth/passhash");
 const generateToken = require("../../utils/auth/generateToken");
+const passhash = require("../../utils/auth/passhash");
 
-// Everything with the word temp is a placeholder that you'll change in accordance with your project
-
-exports.fetchTemp = async (tempId, next) => {
+exports.fetchUser = async (userId, next) => {
   try {
-    const temp1 = await Temp.findById(tempId);
-    return temp1;
+    const user1 = await User.findById(userId);
+    return user1;
   } catch (error) {
     return next(error);
   }
 };
 
-exports.getTemp = async (req, res, next) => {
+exports.getUser = async (req, res, next) => {
   try {
-    const temps = await Temp.find().select("-__v");
+    const users = await User.find().select("-__v");
     return res.status(200).json(temps);
   } catch (error) {
     return next(error);
   }
 };
 
-exports.createTemp = async (req, res, next) => {
+exports.createUser = async (req, res, next) => {
   try {
     const { password } = req.body;
     req.body.password = await passHash(password);
@@ -37,13 +36,26 @@ exports.createTemp = async (req, res, next) => {
 exports.signin = async (req, res) => {
   try {
     const token = generateToken(req.user);
+    console.log(token);
     return res.status(200).json({ token });
   } catch (err) {
     return res.status(500).json(err.message);
   }
 };
 
-exports.updateTemp = async (req, res, next) => {
+exports.signup = async (req, res, next) => {
+  try {
+    const { password } = req.body;
+    req.body.password = await passhash(password);
+    const newUser = await User.create(req.body);
+    const token = generateToken(newUser);
+    res.status(201).json({ token });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateUser = async (req, res, next) => {
   try {
     await Temp.findByIdAndUpdate(req.temp.id, req.body);
     return res.status(204).end();
@@ -52,7 +64,7 @@ exports.updateTemp = async (req, res, next) => {
   }
 };
 
-exports.deleteTemp = async (req, res, next) => {
+exports.deleteUser = async (req, res, next) => {
   try {
     await Temp.findByIdAndRemove({ _id: req.temp.id });
     return res.status(204).end();
