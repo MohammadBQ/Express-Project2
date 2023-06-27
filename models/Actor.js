@@ -6,4 +6,4 @@ const ActrosSchema = new Schema({
   // create relations in here and in the other model
 });
 
-module.exports = model("Actros", Actrosschema);
+module.exports = model("Actros", ActrosSchema);

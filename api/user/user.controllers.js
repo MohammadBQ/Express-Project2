@@ -15,7 +15,7 @@ exports.fetchUser = async (userId, next) => {
 exports.getUser = async (req, res, next) => {
   try {
     const users = await User.find().select("-__v");
-    return res.status(200).json(temps);
+    return res.status(200).json(users);
   } catch (error) {
     return next(error);
   }
@@ -25,8 +25,8 @@ exports.createUser = async (req, res, next) => {
   try {
     const { password } = req.body;
     req.body.password = await passHash(password);
-    const newTemp = await Temp.create(req.body);
-    const token = generateToken(newTemp);
+    const newUser = await Temp.create(req.body);
+    const token = generateToken(newUser);
     res.status(201).json({ token });
   } catch (err) {
     return res.status(500).json(err.message);
@@ -57,7 +57,7 @@ exports.signup = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
   try {
-    await Temp.findByIdAndUpdate(req.temp.id, req.body);
+    await User.findByIdAndUpdate(req.temp.id, req.body);
     return res.status(204).end();
   } catch (error) {
     return next(error);
@@ -66,7 +66,7 @@ exports.updateUser = async (req, res, next) => {
 
 exports.deleteUser = async (req, res, next) => {
   try {
-    await Temp.findByIdAndRemove({ _id: req.temp.id });
+    await User.findByIdAndRemove({ _id: req.temp.id });
     return res.status(204).end();
   } catch (error) {
     return next(error);

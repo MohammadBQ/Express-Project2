@@ -1,7 +1,8 @@
 const express = require("express");
-const { signin, signup } = require("./user.controllers");
+const { signin, signup, receiveListOfMovies } = require("./user.controllers");
 const router = express.Router();
 const passport = require("passport");
+const uploader = require("../../middlewares/uploader");
 
 router.param("userId", async (req, res, next, userId) => {
   try {
@@ -21,7 +22,7 @@ router.post(
   passport.authenticate("local", { session: false }),
   signin
 );
-router.post("/signup", signup);
+router.post("/signup", uploader.single("image"), signup);
 
 module.exports = router;
 
