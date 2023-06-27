@@ -1,9 +1,11 @@
 const { model, Schema } = require("mongoose");
 
-const Movieschema = new Schema({
-  name: { type: String, required: true },
+const GenreSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    movies: [{ type: Schema.Types.ObjectId, ref: "Movie" }],
+  },
+  { timestamps: true }
+);
 
-  // create relations in here and in the other model
-});
-
-module.exports = model("Movie", Movieschema);
+module.exports = model("Genre", GenreSchema);

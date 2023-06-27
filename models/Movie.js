@@ -1,12 +1,17 @@
 const { model, Schema } = require("mongoose");
 
-const MovieSchema = new Schema({
-  name: { type: String, unique: true, required: true },
-  relaseDate: { type: String, required: true },
-  review: String,
-  ratings: { type: [Number], default: undefined },
+const MovieSchema = new Schema(
+  {
+    name: { type: String, unique: true, required: true },
+    releaseDate: { type: Date, required: true },
 
-  // create relations in here and in the other model
-});
+    ratings: { type: [Number], default: undefined },
+
+    genres: [{ type: Schema.Types.ObjectId, ref: "Genre" }],
+    actors: [{ type: Schema.Types.ObjectId, ref: "Actor" }],
+    reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
+  },
+  { timestamps: true }
+);
 
 module.exports = model("Movie", MovieSchema);

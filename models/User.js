@@ -8,7 +8,7 @@ const UserSchema = new Schema(
     image: { type: String },
     isStaff: { type: Boolean },
 
-    // create relations in here and in the other model
+    reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
   },
   { timestamps: true }
 );

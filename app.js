@@ -9,7 +9,8 @@ const errorHandler = require("./middlewares/errorHandler");
 
 const userRoutes = require("./api/user/user.routes");
 const movieRoutes = require("./api/movie/movie.routes");
-const actorRoutes = require("./api/Actor/actor.routes");
+const actorRoutes = require("./api/actor/actor.routes");
+const reviewRoutes = require("./api/review/review.routes");
 const config = require("./config/keys");
 const passport = require("passport");
 const { localStrategy, jwtStrategy } = require("./middlewares/passport");
@@ -34,6 +35,7 @@ app.use("/media", express.static(path.join(__dirname, "media")));
 app.use("/user", userRoutes);
 app.use("/movie", movieRoutes);
 app.use("/actor", actorRoutes);
+app.use("/reviews", reviewRoutes);
 
 // middlewares after routes
 app.use(notFound);
@@ -41,14 +43,13 @@ app.use(errorHandler);
 
 //run server
 
-// const PORT = process.env.PORT || 8000;
-// app.listen(PORT, () => {
-//   console.log(`App running on PORT:${PORT}`);
-// });
-app.listen(config.PORT, () => {
-  console.log(`The application is running on ${config.PORT}`);
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`App running on PORT:${PORT}`);
 });
 
-module.exports = app;
+// app.listen(config.PORT, () => {
+//   console.log(`The application is running on ${config.PORT}`);
+// });
 
-//run server
+module.exports = app;

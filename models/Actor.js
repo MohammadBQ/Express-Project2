@@ -1,9 +1,12 @@
 const { model, Schema } = require("mongoose");
 
-const ActrosSchema = new Schema({
-  name: { type: String, required: true },
+const ActorSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    age: Number,
+    movies: [{ type: Schema.Types.ObjectId, ref: "Movie" }],
+  },
+  { timestamps: true }
+);
 
-  // create relations in here and in the other model
-});
-
-module.exports = model("Actros", ActrosSchema);
+module.exports = model("Actor", ActorSchema);
