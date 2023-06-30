@@ -1,8 +1,15 @@
 const express = require("express");
-const Movie = require("../../models/Movie");
-const router = express.Router();
+const passport = require("passport");
 
-const { receiveListOfMovies, createMovie } = require("./movie.controllers");
+const router = express.Router();
+const Movie = require("../../models/Movie");
+
+const {
+  getAllMovies,
+  addMovie,
+  addGenreToMovie,
+  getMoviesByGenre,
+} = require("./movie.controllers");
 
 router.param("movieId", async (req, res, next, movieId) => {
   try {
@@ -18,7 +25,12 @@ router.param("movieId", async (req, res, next, movieId) => {
   }
 });
 
-router.get("/", receiveListOfMovies);
-router.post("/", createMovie);
+router.get("/", getAllMovies);
+
+router.get("/:genre/movies", getMoviesByGenre);
+
+router.post("/", passport.authenticate("jwt", { session: false }), addMovie);
+
+router.post("/:movieId/:genreId", addGenreToMovie);
 
 module.exports = router;

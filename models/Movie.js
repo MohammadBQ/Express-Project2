@@ -2,7 +2,7 @@ const { model, Schema } = require("mongoose");
 
 const MovieSchema = new Schema(
   {
-    name: { type: String, unique: true, required: true },
+    name: { type: String, required: true },
     releaseDate: { type: Date, required: true },
 
     ratings: { type: [Number], default: undefined },
