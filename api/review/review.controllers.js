@@ -1,7 +1,6 @@
 const Review = require("../../models/Review");
 const Movie = require("../../models/Movie");
 
-
 exports.fetchReview = async (reviewId, next) => {
   try {
     const review1 = await Review.findById(reviewId);
@@ -20,14 +19,14 @@ exports.getReview = async (req, res, next) => {
     // execute query with page and limit values
     const reviews = await Review.find()
       .select("-__v")
-      .populate("movieId userId", "name username")
+      // .populate("movieId userId", "name username")
+      .populate("user movie")
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .exec();
-    
+
     const count = await Review.countDocuments();
 
-    
     return res.status(200).json({
       reviews,
       totalPages: Math.ceil(count / limit),
@@ -41,19 +40,19 @@ exports.getReview = async (req, res, next) => {
 exports.getMyReviews = async (req, res, next) => {
   try {
     const { page = 1, limit = 10 } = req.query;
-    
+
     const reviews = await Review.find({ userId: { _id: req.user._id } })
       .select("-__v -userId")
-      .populate("movieId", "name")
+      .populate("user movie")
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .exec();
-    
+
     const count = await Review.countDocuments();
 
     if (reviews.length <= 0)
       return res.status(200).json({ message: "you have zero reviews!" });
-    
+
     return res.status(200).json({
       reviews,
       totalPages: Math.ceil(count / limit),
@@ -66,14 +65,12 @@ exports.getMyReviews = async (req, res, next) => {
 
 exports.addReview = async (req, res, next) => {
   try {
-    
     const { movieId } = req.params;
     const foundMovie = await Movie.findById({ _id: movieId }).populate(
       "reviews"
     );
     if (!foundMovie) return next({ status: 404, message: "Movie not found" });
 
-    
     let reviewed = false;
     if (foundMovie.reviews.length > 0) {
       foundMovie.reviews.forEach((review) =>
@@ -92,7 +89,7 @@ exports.addReview = async (req, res, next) => {
     req.body.userId = req.user._id;
     req.body.movieId = foundMovie._id;
     const newReview = await Review.create(req.body);
-      // to count the average rating 
+    // to count the average rating
     let counter = 0;
     let total = 0;
     foundMovie.reviews.push(newReview);
@@ -104,10 +101,11 @@ exports.addReview = async (req, res, next) => {
     });
 
     const averageRate = Number((total / counter).toFixed(1));
-    
+
     await req.user.updateOne({
       $push: { reviews: newReview._id },
     });
+
     await foundMovie.updateOne({
       $push: { reviews: newReview._id },
     });
@@ -118,10 +116,9 @@ exports.addReview = async (req, res, next) => {
       });
     } else if (foundMovie.reviews.length == 0) {
       await foundMovie.updateOne({
-        $set: { averageRate: newReview.rating },
+        $set: { averageRate: newReview.ratings },
       });
     }
-    
 
     res.status(201).json(newReview);
   } catch (err) {
@@ -153,6 +150,16 @@ exports.deleteReview = async (req, res, next) => {
       return next({ status: 401, message: "You are not an admin !!!!" });
 
     await req.review.deleteOne();
+    return res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.deleteAll = async (req, res, next) => {
+  try {
+    // Delete all
+    await Review.deleteMany({});
     return res.status(204).end();
   } catch (error) {
     return next(error);

@@ -55,3 +55,13 @@ exports.deleteGenreById = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.deleteAllGenres = async (req, res, next) => {
+  try {
+    // Delete all
+    await Genre.deleteMany({});
+    return res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
+};

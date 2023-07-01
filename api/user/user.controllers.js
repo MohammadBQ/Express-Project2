@@ -14,7 +14,7 @@ exports.fetchUser = async (userId, next) => {
 
 exports.getUser = async (req, res, next) => {
   try {
-    const users = await User.find().select("-__v");
+    const users = await User.find().select("-__v").populate("reviews");
     return res.status(200).json(users);
   } catch (error) {
     return next(error);
@@ -67,6 +67,16 @@ exports.updateUser = async (req, res, next) => {
 exports.deleteUser = async (req, res, next) => {
   try {
     await User.findByIdAndRemove({ _id: req.user.id });
+    return res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.deleteAll = async (req, res, next) => {
+  try {
+    // Delete all
+    await User.deleteMany({});
     return res.status(204).end();
   } catch (error) {
     return next(error);

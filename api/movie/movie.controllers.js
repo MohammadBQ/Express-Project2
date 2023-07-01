@@ -3,10 +3,17 @@ const Movie = require("../../models/Movie");
 
 exports.getAllMovies = async (req, res, next) => {
   try {
-    const movies = await Movie.find().populate("genres");
+    const movies = await Movie.find().populate("actors genres reviews");
     res.json(movies);
   } catch (error) {
     next(error);
+  }
+};
+exports.getMovieById = async (req, res, next) => {
+  try {
+    return res.status(200).json(req.movie);
+  } catch (error) {
+    return next(error);
   }
 };
 
@@ -25,15 +32,32 @@ exports.addMovie = async (req, res, next) => {
     next(error);
   }
 };
+exports.deleteMovieById = async (req, res, next) => {
+  try {
+    await req.movie.deleteOne();
+    return res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
+};
+exports.deleteAll = async (req, res, next) => {
+  try {
+    // Delete all
+    await Movie.deleteMany({});
+    return res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
+};
 
 exports.addGenreToMovie = async (req, res, next) => {
   try {
-    const { genreId } = req.params; // i can create a route.param
+    const { genreId } = req.params;
     const genre = await Genre.findById(genreId);
 
     await Movie.findByIdAndUpdate(req.movie._id, {
       $push: { genres: genre._id },
-    }); // so we are takeing the tag and put it in the post
+    });
 
     await Genre.findByIdAndUpdate(genreId, {
       $push: { movies: req.movie._id },

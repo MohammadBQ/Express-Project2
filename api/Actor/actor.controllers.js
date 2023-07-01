@@ -8,7 +8,7 @@ exports.fetchActorById = async (actorId) => {
 
 exports.getAllActors = async (req, res, next) => {
   try {
-    // Populate here
+    // Populate
     const actors = await Actor.find().populate("movies");
     return res.status(200).json(actors);
   } catch (error) {
@@ -57,6 +57,15 @@ exports.deleteActorById = async (req, res, next) => {
     return next(error);
   }
 };
+exports.deleteAllActors = async (req, res, next) => {
+  try {
+    // Delete all actors
+    await Actor.deleteMany({});
+    return res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
+};
 
 exports.addMovieToActor = async (req, res, next) => {
   try {
@@ -65,7 +74,7 @@ exports.addMovieToActor = async (req, res, next) => {
 
     await Actor.findByIdAndUpdate(req.actor._id, {
       $push: { movies: movie._id },
-    }); // so we are takeing the tag and put it in the post
+    }); // so we are takeing the actor and put it in the movie
 
     await Movie.findByIdAndUpdate(movieId, {
       $push: { actors: req.actor._id },

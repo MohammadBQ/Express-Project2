@@ -9,8 +9,8 @@ const UserSchema = new Schema(
     isStaff: { type: Boolean },
 
     reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
-  },
-  { timestamps: true }
+  }
+  //{ timestamps: true }
 );
 
 module.exports = model("User", UserSchema);
