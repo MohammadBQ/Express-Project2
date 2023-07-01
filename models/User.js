@@ -9,6 +9,13 @@ const UserSchema = new Schema(
     isStaff: { type: Boolean },
 
     reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
+
+    watchlist: [
+      {
+        movie: { type: Schema.Types.ObjectId, ref: "Movie" },
+        watched: { type: Boolean, default: false },
+      },
+    ],
   }
   //{ timestamps: true }
 );

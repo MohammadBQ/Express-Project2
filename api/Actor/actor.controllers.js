@@ -9,7 +9,7 @@ exports.fetchActorById = async (actorId) => {
 exports.getAllActors = async (req, res, next) => {
   try {
     // Populate
-    const actors = await Actor.find().populate("movies");
+    const actors = await Actor.find().populate("movies", "name -_id");
     return res.status(200).json(actors);
   } catch (error) {
     return next(error);

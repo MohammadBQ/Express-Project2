@@ -82,3 +82,24 @@ exports.deleteAll = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.addMOvieToWatchList = async (req, res, next) => {
+  try {
+    const { movieId } = req.params;
+    //check if movie exists
+
+    // find the user and update watchlist
+
+    //check if movie is already in watchlist
+
+    //add movie to watchlist
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getWatchList = async (req, res, next) => {
+  try {
+    // Find the user and populate the movies in the watchlist
+  } catch (error) {}
+};

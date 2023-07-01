@@ -8,7 +8,7 @@ exports.fetchGenreById = async (genreId) => {
 exports.getAllGenres = async (req, res, next) => {
   try {
     // Populate here
-    const genres = await Genre.find().populate("movies");
+    const genres = await Genre.find().populate("movies", "name -_id");
     return res.status(200).json(genres);
   } catch (error) {
     return next(error);

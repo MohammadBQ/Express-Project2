@@ -19,8 +19,10 @@ exports.getReview = async (req, res, next) => {
     // execute query with page and limit values
     const reviews = await Review.find()
       .select("-__v")
-      // .populate("movieId userId", "name username")
-      .populate("user movie")
+      //.populate("movieId userId", "name username")
+      .populate("user", "username-_id")
+      .populate("movie", "name-_id")
+      //.populate("movie user")
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .exec();
@@ -47,7 +49,6 @@ exports.getMyReviews = async (req, res, next) => {
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .exec();
-
     const count = await Review.countDocuments();
 
     if (reviews.length <= 0)
@@ -73,11 +74,13 @@ exports.addReview = async (req, res, next) => {
 
     let reviewed = false;
     if (foundMovie.reviews.length > 0) {
-      foundMovie.reviews.forEach((review) =>
-        review.userId._id.equals(req.user._id)
-          ? (reviewed = true)
-          : (reviewed = false)
-      );
+      foundMovie.reviews.forEach((review) => {
+        console.log(review, req.user._id);
+        if (review.user?._id.equals(req.user._id)) {
+          console.log("TRUE");
+          reviewed = true;
+        }
+      });
     }
 
     if (reviewed)
@@ -86,9 +89,10 @@ exports.addReview = async (req, res, next) => {
         message: `you have already reviewed ${foundMovie.name}`,
       });
 
-    req.body.userId = req.user._id;
+    req.body.user = req.user._id;
     req.body.movieId = foundMovie._id;
     const newReview = await Review.create(req.body);
+
     // to count the average rating
     let counter = 0;
     let total = 0;
