@@ -18,7 +18,7 @@ const signedIn = passport.authenticate("jwt", { session: false });
 
 router.param("movieId", async (req, res, next, movieId) => {
   try {
-    const movie = await Movie.findById(movieId);
+    const movie = await Movie.findById(movieId).populate("reviews");
     if (!movie)
       return res.status(404).json({
         msg: "Sorry, no film in our archives matches that ID!",

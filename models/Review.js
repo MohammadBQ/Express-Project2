@@ -3,7 +3,7 @@ const { model, Schema } = require("mongoose");
 const ReviewSchema = new Schema(
   {
     text: String,
-    ratings: { type: [Number], default: undefined },
+    ratings: { type: Number, default: undefined },
 
     user: { type: Schema.Types.ObjectId, ref: "User" }, // reviewBy
     movie: { type: Schema.Types.ObjectId, ref: "Movie" },

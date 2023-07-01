@@ -101,5 +101,7 @@ exports.addMOvieToWatchList = async (req, res, next) => {
 exports.getWatchList = async (req, res, next) => {
   try {
     // Find the user and populate the movies in the watchlist
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
