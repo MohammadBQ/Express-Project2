@@ -1,3 +1,4 @@
+const Actor = require("../../models/Actor");
 const Genre = require("../../models/Genre");
 const Movie = require("../../models/Movie");
 
@@ -85,6 +86,24 @@ exports.getMoviesByGenre = async (req, res, next) => {
     const movies = await Movie.find({ genres: genre._id });
 
     // Lastly, send the movies back in the response
+    res.status(200).json(movies);
+  } catch (error) {
+    next(error);
+  }
+};
+exports.getMoviesByActor = async (req, res, next) => {
+  try {
+    const actorName = req.params.actor;
+    //fetch the genre document by its name
+    const actor = await Actor.findOne({ name: actorName });
+    if (!actor) {
+      return res.status(404).json({ error: "Actor not found" });
+    }
+
+    //fetch all movies that reference this genre
+    const movies = await Movie.find({ actors: actor._id }).select("name -_id");
+
+    //send the movies back in the response
     res.status(200).json(movies);
   } catch (error) {
     next(error);

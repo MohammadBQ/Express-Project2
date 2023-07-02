@@ -109,6 +109,7 @@ exports.addReview = async (req, res, next) => {
     });
 
     const avgRating = (total / counter).toFixed(1);
+
     await req.user.updateOne({
       $push: { reviews: newReview._id },
     });

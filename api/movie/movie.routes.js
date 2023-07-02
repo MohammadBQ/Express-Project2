@@ -12,6 +12,7 @@ const {
   deleteMovieById,
   getMovieById,
   deleteAll,
+  getMoviesByActor,
 } = require("./movie.controllers");
 
 const signedIn = passport.authenticate("jwt", { session: false });
@@ -41,6 +42,8 @@ router.delete("/", signedIn, deleteAll);
 router.post("/", signedIn, addMovie);
 
 router.get("/:genre/movies", signedIn, getMoviesByGenre);
+
+router.get("/:actor/actorname", signedIn, getMoviesByActor);
 
 router.post("/:movieId/:genreId", signedIn, addGenreToMovie);
 
