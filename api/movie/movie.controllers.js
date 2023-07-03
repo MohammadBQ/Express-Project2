@@ -7,7 +7,7 @@ exports.getAllMovies = async (req, res, next) => {
     const movies = await Movie.find()
       .populate("actors", "name -_id") // only get name from actors
       .populate("genres", "name -_id") // only get name from genres
-      .populate("reviews"); // get all fields from reviews;
+      .populate("reviews", "text-_id"); // get all fields from reviews;
     //.populate("reviews", "ratings-_id");
     res.json(movies);
   } catch (error) {

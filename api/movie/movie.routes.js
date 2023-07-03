@@ -37,7 +37,7 @@ router.get("/:movieId", signedIn, getMovieById);
 
 router.delete("/:movieId", signedIn, deleteMovieById);
 
-router.delete("/", signedIn, deleteAll);
+router.delete("/", deleteAll);
 
 router.post("/", signedIn, addMovie);
 
