@@ -10,6 +10,7 @@ const MovieSchema = new Schema(
     genres: [{ type: Schema.Types.ObjectId, ref: "Genre" }],
     actors: [{ type: Schema.Types.ObjectId, ref: "Actor" }],
     reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
+    avgRating: { type: Number, default: 0 }
   },
   { timestamps: true }
 );
