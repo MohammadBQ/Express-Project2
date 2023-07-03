@@ -8,7 +8,7 @@ exports.fetchGenreById = async (genreId) => {
 exports.getAllGenres = async (req, res, next) => {
   try {
     // Populate here
-    const genres = await Genre.find().populate("movies");
+    const genres = await Genre.find().populate("movies", "name -_id");
     return res.status(200).json(genres);
   } catch (error) {
     return next(error);
@@ -50,6 +50,16 @@ exports.updateGenreById = async (req, res, next) => {
 exports.deleteGenreById = async (req, res, next) => {
   try {
     await req.genre.deleteOne();
+    return res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.deleteAllGenres = async (req, res, next) => {
+  try {
+    // Delete all
+    await Genre.deleteMany({});
     return res.status(204).end();
   } catch (error) {
     return next(error);

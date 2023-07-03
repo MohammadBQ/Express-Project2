@@ -7,9 +7,11 @@ const {
   updateGenreById,
   deleteGenreById,
   fetchGenreById,
+  deleteAllGenres,
 } = require("./genre.controllers");
 
 const router = express.Router();
+const signedIn = passport.authenticate("jwt", { session: false });
 
 router.param("genreId", async (req, res, next, genreId) => {
   try {
@@ -22,11 +24,16 @@ router.param("genreId", async (req, res, next, genreId) => {
   }
 });
 
-router.get("/", getAllGenres);
+router.get("/", signedIn, getAllGenres);
 
-router.post("/", passport.authenticate("jwt", { session: false }), createGenre);
-router.get("/:genreId", getGenreById);
-router.put("/:genreId", updateGenreById);
-router.delete("/:genreId", deleteGenreById);
+router.post("/", signedIn, createGenre);
+
+router.get("/:genreId", signedIn, getGenreById);
+
+router.put("/:genreId", signedIn, updateGenreById);
+
+router.delete("/:genreId", signedIn, deleteGenreById);
+
+router.delete("/", signedIn, deleteAllGenres);
 
 module.exports = router;

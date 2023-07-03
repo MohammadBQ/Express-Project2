@@ -8,8 +8,10 @@ const {
   updateActorById,
   deleteActorById,
   addMovieToActor,
+  deleteAllActors,
 } = require("./actor.controllers");
 const router = express.Router();
+const signedIn = passport.authenticate("jwt", { session: false });
 
 router.param("actorId", async (req, res, next, actorId) => {
   try {
@@ -22,11 +24,17 @@ router.param("actorId", async (req, res, next, actorId) => {
   }
 });
 
-router.get("/", getAllActors);
-router.post("/", passport.authenticate("jwt", { session: false }), addCeleb);
-router.get("/:actorId", getActorById);
-router.put("/:actorId", updateActorById);
-router.delete("/:actorId", deleteActorById);
+router.get("/", signedIn, getAllActors);
+
+router.post("/", signedIn, addCeleb);
+
+router.get("/:actorId", signedIn, getActorById);
+
+router.put("/:actorId", signedIn, updateActorById);
+
+router.delete("/:actorId", signedIn, deleteActorById);
+
+router.delete("/", signedIn, deleteAllActors);
 
 router.post("/:actorId/:movieId", addMovieToActor);
 

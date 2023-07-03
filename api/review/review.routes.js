@@ -6,6 +6,7 @@ const {
   fetchReview,
   addReview,
   getMyReviews,
+  deleteAll,
 } = require("./review.controllers");
 const router = express.Router();
 const passport = require("passport");
@@ -23,11 +24,19 @@ router.param("reviewId", async (req, res, next, reviewId) => {
     return next(error);
   }
 });
+
 router.use(validateRating);
+
 router.get("/", signedIn, getReview);
+
 router.get("/my-reviews", signedIn, getMyReviews);
+
 router.post("/:movieId", signedIn, addReview);
+
 router.put("/edit/:reviewId", signedIn, updateReview);
+
 router.delete("/delete/:reviewId", signedIn, deleteReview);
+
+router.delete("/", signedIn, deleteAll);
 
 module.exports = router;
